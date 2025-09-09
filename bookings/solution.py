@@ -1,51 +1,49 @@
 import sys
 import datetime
 
-def main():
-    testcases = int(sys.stdin.read())
+class Booking:
+    content = ""
+    arrivalTime = None
+    departureTime = None
+    endTime = None
 
-    for i in testcases:
+
+def main():
+    testcases = int(sys.stdin.readline())
+    # print(testcases)
+
+    for i in range(testcases):
         bookingcleaningtime = sys.stdin.readline().split()
         #store room details using array of pairs
-        rooms = [[]]
-        for j in bookingcleaningtime[0]:
-            bookingdetail = sys.stdin.readline().split()
-            arrivalTime = datetime.strptime(bookingcleaningtime[1]+"-"+bookingcleaningtime[2], "%Y-%m-%d-%H:%M")
-            departureTime = datetime.strptime(bookingcleaningtime[3]+"-"+bookingcleaningtime[4], "%Y-%m-%d-%H:%M")
-            rooms.append([arrivalTime, departureTime])
+        rooms = []
+        for j in range(int(bookingcleaningtime[0])):
+            bookingdetail = Booking()
+            bookingdetail.content = sys.stdin.readline().split()
+            # print(bookingdetail.content)
+            bookingdetail.arrivalTime = datetime.datetime.strptime(bookingdetail.content[1]+"-"+bookingdetail.content[2], "%Y-%m-%d-%H:%M")
+            bookingdetail.departureTime = datetime.datetime.strptime(bookingdetail.content[3]+"-"+bookingdetail.content[4], "%Y-%m-%d-%H:%M")
+            bookingdetail.endTime = bookingdetail.departureTime + datetime.timedelta(minutes=int(bookingcleaningtime[1]))
+            rooms.append(bookingdetail)
+        
+        #greedy approach
+        rooms.sort(key=lambda x: x.arrivalTime)
+        finalrooms = []
+        # print(rooms)
 
-        # Do something with the numbers
-        print(sum(numbers))
-
-    # Fast I/O (uncomment if needed for large inputs)
-    # input = sys.stdin.readline
-    
-    # Common input patterns:
-    
-    # Single integer
-    # n = int(input())
-    
-    # Multiple integers on one line
-    # a, b = map(int, input().split())
-    
-    # List of integers
-    # arr = list(map(int, input().split()))
-    
-    # Multiple lines of input
-    # lines = []
-    # for _ in range(n):
-    #     lines.append(input().strip())
-    
-    # Read until EOF
-    # lines = []
-    # try:
-    #     while True:
-    #         lines.append(input().strip())
-    # except EOFError:
-    #     pass
-    
-    # YOUR CODE HERE
-    
+        for room in rooms:
+            if (finalrooms.__len__() == 0):# First room
+                finalrooms.append(room)
+                continue
+            roomfound = False
+            for totaldetail in finalrooms:
+                if (room.arrivalTime >= totaldetail.endTime):# Can use existing room
+                    totaldetail.endTime = room.endTime
+                    roomfound = True
+                    break
+            if not roomfound:
+                finalrooms.append(room)
+        # print(finalrooms)
+        print(len(finalrooms))
     pass
 
 if __name__ == "__main__":

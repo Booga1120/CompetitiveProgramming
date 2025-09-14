@@ -9,7 +9,7 @@ def main():
 
     for i in range(input[0]):
         potion = int(sys.stdin.readline())
-        if (time > potion):
+        if (time >= potion):
             result = False
         time += input[1]
     

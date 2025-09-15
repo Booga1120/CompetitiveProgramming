@@ -6,13 +6,13 @@ class Main {
     public static void main(String[] args) {
         HashSet<Character> hardCons = new HashSet<>(
             Arrays.asList('b', 'c',
-                                'd', 'g',
-                                'k', 'n',
-                                'p', 't',
-                                'B', 'C',
-                                'D', 'G',
-                                'K', 'N',
-                                'P', 'T'));
+                        'd', 'g',
+                        'k', 'n',
+                        'p', 't',
+                        'B', 'C',
+                        'D', 'G',
+                        'K', 'N',
+                        'P', 'T'));
         Scanner sc = new Scanner(System.in);
         String line = sc.nextLine();
         String result = "";

@@ -1,0 +1,48 @@
+graph = adj list
+index = map of vertex to index
+lowlink = map of vertex to lowlink
+onStack = map of vertext to boolean
+idx = 0
+s = tarjan stack
+SCCs = list
+
+algorithm tarjan(v)
+    # v is new vertex, initialize
+    index[v] = idx
+    lowlink[v] = idx
+    idx++
+    s.push(v)
+    onStack[v] = Trued
+
+    #loop neighbors of v
+    for w in graph[v]
+        # no index defined for w, hasn't been visited yet, recurse
+        if w not in index:
+            tarjan(w)
+            #update vs lowlink if w can reach a lower (earlier) vertex
+            lowlink[v] = min(lowlink[v], lowlink[w])
+
+        # if w has been visited and is on stack, it is part of current SCCs
+        else if onStack[w]:
+            lowlink[v] = min(lowlink[v], index[w])
+
+        # other case: if w is ivisited but not on stack, this is cross edge
+        # w is already part of another scc, we do nothing
+
+    # finihsed processing neighbors v
+    # if v is root vertex, pop stack to genreate new CC
+    # if lowlink[v] = index[v], v cant reach anything lower (earlier) than itself,
+    # so we've found the whole component
+    if lowlink[v] == index[v]:
+        newSCC = []
+        # pop stack through v
+        while true:
+            curr = s.pop()
+            onStack[curr] = False
+            newSCC.add(curr)
+            if curr == v:
+                break
+        SCCs.add(newSCC)
+
+#a little more... didn't have time to copy down in time
+

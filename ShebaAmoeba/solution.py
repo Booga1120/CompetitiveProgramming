@@ -5,30 +5,29 @@ def main():
     m, n = map(int, sys.stdin.readline().split())
     grid = []
     for i in range(m):
-        grid.append(sys.stdin.readline().strip())
+        row = sys.stdin.readline().strip()
+        grid.append(list(row))
     
-    visited = [[False] * n for _ in range(m)]
     whiteRegions = 0
     
     def floodFill(row, col):
-        if row < 0 or row >= m or col < 0 or col >= n:
-            return
-        if visited[row][col] or grid[row][col] == '#':
-            return
-        
-        visited[row][col] = True
-        
-        directions = [(-1,-1), (-1,0), (-1,1), (0,-1), (0,1), (1,-1), (1,0), (1,1)]
-        for dr, dc in directions:
-            floodFill(row + dr, col + dc)
+        if grid[row][col] == '#':
+            grid[row][col] = '.'
+            directions = [(0,1), (1,0), (0,-1), (-1,0), (1,1), (1,-1), (-1,1), (-1,-1)]
+            for dr, dc in directions:
+                newRow, newCol = row + dr, col + dc
+                if 0 <= newRow < len(grid) and 0 <= newCol < len(grid[0]):
+                    if grid[newRow][newCol] == '#':
+                        floodFill(newRow, newCol)
+
     
-    for i in range(m):
-        for j in range(n):
-            if grid[i][j] == '.' and not visited[i][j]:
-                floodFill(i, j)
+    for row in range(len(grid)):
+        for col in range(len(grid[0])):
+            if grid[row][col] == '#':
+                floodFill(row, col)
                 whiteRegions += 1
     
-    print(whiteRegions - 1)
+    print(whiteRegions)
 
 if __name__ == "__main__":
     main()

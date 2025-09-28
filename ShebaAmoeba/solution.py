@@ -1,33 +1,57 @@
 import sys
-import math
+from collections import defaultdict
+
+def tarjanScc(graph, n):
+    index = {}
+    lowlink = {}
+    onStack = {}
+    idx = 0
+    stack = []
+    sccCount = 0
+    
+    def tarjan(v):
+        nonlocal idx, sccCount
+        index[v] = idx
+        lowlink[v] = idx
+        idx += 1
+        stack.append(v)
+        onStack[v] = True
+        
+        for w in graph[v]:
+            if w not in index:
+                tarjan(w)
+                lowlink[v] = min(lowlink[v], lowlink[w])
+            elif onStack.get(w, False):
+                lowlink[v] = min(lowlink[v], index[w])
+        
+        if lowlink[v] == index[v]:
+            sccCount += 1
+            while True:
+                curr = stack.pop()
+                onStack[curr] = False
+                if curr == v:
+                    break
+    
+    for vertex in range(1, n + 1):
+        if vertex not in index:
+            tarjan(vertex)
+    
+    return sccCount
 
 def main():
-    m, n = map(int, sys.stdin.readline().split())
-    grid = []
-    for i in range(m):
-        row = sys.stdin.readline().strip()
-        grid.append(list(row))
+    testCases = int(sys.stdin.readline().strip())
     
-    whiteRegions = 0
-    
-    def floodFill(row, col):
-        if grid[row][col] == '#':
-            grid[row][col] = '.'
-            directions = [(0,1), (1,0), (0,-1), (-1,0), (1,1), (1,-1), (-1,1), (-1,-1)]
-            for dr, dc in directions:
-                newRow, newCol = row + dr, col + dc
-                if 0 <= newRow < len(grid) and 0 <= newCol < len(grid[0]):
-                    if grid[newRow][newCol] == '#':
-                        floodFill(newRow, newCol)
-
-    
-    for row in range(len(grid)):
-        for col in range(len(grid[0])):
-            if grid[row][col] == '#':
-                floodFill(row, col)
-                whiteRegions += 1
-    
-    print(whiteRegions)
+    for _ in range(testCases):
+        n, m = map(int, sys.stdin.readline().split())
+        
+        graph = defaultdict(list)
+        
+        for _ in range(m):
+            a, b = map(int, sys.stdin.readline().split())
+            graph[a].append(b)
+        
+        sccCount = tarjanScc(graph, n)
+        print(sccCount)
 
 if __name__ == "__main__":
     main()

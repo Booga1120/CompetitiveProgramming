@@ -4,6 +4,7 @@ from heapq import heappush, heappop
 import math
 
 def main():
+    # sys.setrecursionlimit(10000)
     # Standard input reading
     # input = sys.stdin.read
     # data = input().splitlines()

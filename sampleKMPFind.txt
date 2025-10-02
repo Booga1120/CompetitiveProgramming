@@ -1,0 +1,29 @@
+txt = text to search
+pat = pattern to search for
+T = precomputed partial match table
+all = true if finding all mathces, false otherwise
+
+KMP-Find:
+    m = 0 #start index in txt
+    i = 0 #start index in pat
+    matches = empty list for holding matches
+
+    while m + i < txt.length(): # loop to end of text
+        if pat[i] == txt[m+i]  #characters match
+            if i == pat.length()-1 # finished match
+                add m to matches
+
+            if not all: return matches
+                #move forward to search for more matches
+                m = m+i -T[i]
+                i = T[i]
+            i++
+            
+
+        else # characters don't match
+            if T[i] != -1
+                m = m+i-T[i]  # curr pos + mtch len - known match
+                i = T[i]     #resume comparisons after matched characters
+            else            #no valid border
+                m++         #move to next char of text
+                i = 0           #reset to start of pattern

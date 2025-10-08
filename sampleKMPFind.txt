@@ -1,29 +1,57 @@
 txt = text to search
 pat = pattern to search for
 T = precomputed partial match table
-all = true if finding all mathces, false otherwise
+all = true if finding all matches, false otherwise
 
-KMP-Find:
-    m = 0 #start index in txt
-    i = 0 #start index in pat
-    matches = empty list for holding matches
+KMP-FIND	
+	m = 0		# start index in txt
+	i = 0		# start index in pat
+	matches = empty list for holding matches
 
-    while m + i < txt.length(): # loop to end of text
-        if pat[i] == txt[m+i]  #characters match
-            if i == pat.length()-1 # finished match
-                add m to matches
+	while m + i < txt.length():		# loop to end of text
 
-            if not all: return matches
-                #move forward to search for more matches
-                m = m+i -T[i]
-                i = T[i]
-            i++
-            
+		if pat[i] == txt[m+i]		# characters match
+			if i == pat.length()-1		# finished match
+				add m to matches
+				if not all:	return matches
 
-        else # characters don't match
-            if T[i] != -1
-                m = m+i-T[i]  # curr pos + mtch len - known match
-                i = T[i]     #resume comparisons after matched characters
-            else            #no valid border
-                m++         #move to next char of text
-                i = 0           #reset to start of pattern
+				# move forward to search for more matches
+				m = m + i - T[i]	# curr pos + match len - known match
+				i = T[i]			# resume comparisons after matched chars
+			
+			i++ 	# move to next char of pattern
+			
+		else	# characters don't match
+			if T[i] != -1		# valid border, skip ahead
+				m = m + i - T[i]	# curr pos + match len - known match
+				i = T[i]			# resume comparisons after matched chars
+			else				# no valid border
+				m++			# move to next char of text
+				i = 0		# reset to start of pattern
+	return matches
+
+
+
+pat = pattern to build partial match (prefix) table for
+
+BUILD-TABLE
+	T = array of size pat.length()+1
+	i = 0		# prefix of length 0
+	j = -1		# has no longest bordest defined
+
+	T[i] = j	# T[0] = -1
+
+	# loop to build prefix table
+	while i < path.length()
+
+		# try to extend the longest border of pat[0...i-1] by adding pat[i]
+
+		while j >= 0 and pat[i] != pat[j]	# as long as characters mismatch
+			j = T[j]	# move to next largest border
+
+		i++		# T[i] corresponds to pat[0...i-1], so increment i
+		j++		# j is length of border we're extending, so increment
+
+		T[i] = j	# longest border of pat[0...i] is of length j
+
+	return T

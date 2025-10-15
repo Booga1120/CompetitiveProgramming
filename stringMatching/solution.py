@@ -20,34 +20,36 @@ def computeLps(pattern):
     
     return lps
 
-def kmpSearch(pattern, text):
-    m = len(pattern)
-    n = len(text)
+def removeBugsKmp(line, bugMarker):
+    if not bugMarker or not line:
+        return line
     
-    if m > n:
-        return []
+    m = len(bugMarker)
+    lps = computeLps(bugMarker)
     
-    lps = computeLps(pattern)
-    positions = []
+    stack = []
+    matchStack = []
     
-    i = 0
     j = 0
-    
-    while i < n:
-        if text[i] == pattern[j]:
-            i += 1
+    for char in line:
+        stack.append(char)
+        
+        while j > 0 and char != bugMarker[j]:
+            j = lps[j - 1]
+        
+        if char == bugMarker[j]:
             j += 1
         
+        matchStack.append(j)
+        
         if j == m:
-            positions.append(i - j)
-            j = lps[j - 1]
-        elif i < n and text[i] != pattern[j]:
-            if j != 0:
-                j = lps[j - 1]
-            else:
-                i += 1
+            for _ in range(m):
+                stack.pop()
+                matchStack.pop()
+            
+            j = matchStack[-1] if matchStack else 0
     
-    return positions
+    return ''.join(stack)
 
 def main():
     sys.setrecursionlimit(100000)
@@ -57,16 +59,23 @@ def main():
         lines.append(line.rstrip('\n'))
     
     i = 0
+    firstTestCase = True
+    
     while i < len(lines):
-        pattern = lines[i]
-        if i + 1 < len(lines):
-            text = lines[i + 1]
-            positions = kmpSearch(pattern, text)
-            if positions:
-                print(' '.join(map(str, positions)))
-            else:
-                print()
-        i += 2
+        parts = lines[i].split(' ', 1)
+        numLines = int(parts[0])
+        bugMarker = parts[1]
+        
+        if not firstTestCase:
+            print()
+        firstTestCase = False
+        
+        for j in range(i + 1, i + 1 + numLines):
+            if j < len(lines):
+                cleanedLine = removeBugsKmp(lines[j], bugMarker)
+                print(cleanedLine)
+        
+        i += numLines + 1
 
 if __name__ == "__main__":
     main()

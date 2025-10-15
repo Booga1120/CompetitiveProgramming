@@ -1,0 +1,3 @@
+- If given editable problem (like a question in a word doc), you should try to annotate WHILE reading the question
+- When writing code in and IDE, make sure to constantly debug.
+- Speak slower to be more articulate
